@@ -246,6 +246,7 @@ export class SDKLLMProvider implements LLMProvider {
 
           try {
             const cleanEnv = buildSubprocessEnv();
+            console.log(`[llm-provider] query params: cwd=${params.workingDirectory} model=${params.model || '(default)'} resume=${params.sdkSessionId || '(none)'} envMode=${process.env.CTI_ENV_ISOLATION || 'inherit'} envKeys=${Object.keys(cleanEnv).length}`);
 
             // Cross-runtime migration safety: drop non-Claude model names
             // that may linger in session data from a previous Codex runtime.
@@ -321,6 +322,7 @@ export class SDKLLMProvider implements LLMProvider {
             const message = err instanceof Error ? err.message : String(err);
             // Log full error (including stack) to bridge log for debugging
             console.error('[llm-provider] SDK query error:', err instanceof Error ? err.stack || err.message : err);
+            console.error(`[llm-provider] stderr buffer: ${stderrBuf.length} bytes`);
             if (stderrBuf) {
               console.error('[llm-provider] stderr from CLI:', stderrBuf.trim());
             }
